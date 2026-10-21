@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: copilate
+  labels:
+    app: copilate
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: copilate
+  template:
+    metadata:
+      labels:
+        app: copilate
+    spec:
+      containers:
+        - name: copilate
+          image: your-docker-image:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: PORT
+              value: "8080"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: copilate
+spec:
+  selector:
+    app: copilate
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
